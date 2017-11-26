@@ -16,7 +16,7 @@ class LinkedList
 
     node = @head
     until node.nil?
-      yield(node.value) # Each returns value, yet detect returns the node itself
+      yield(node)
       node = node.next_node
     end
   end
@@ -57,7 +57,6 @@ class LinkedList
   # Removes and returns the last element from the list
   def pop
     old_tail = @tail
-    # Detect still deals with nodes, not values?
     new_tail = detect { |node| node.next_node.equal? @tail } 
     new_tail.next_node = nil
     @tail = new_tail
@@ -77,9 +76,20 @@ class LinkedList
 
   # Represent LinkedList as strings
   def to_s(node = @head, string = "")
-    return string if node.next_node.nil? # base case
+    return string if node.next_node.nil?
     string = "(#{@head.value})" if node.equal? @head
     string + " -> (#{node.next_node.value})" + to_s(node.next_node)
+  end
+
+  # Insert new node with value at index
+  def insert_at(index, value)
+    before = at(index - 1)
+    after = before.next_node
+    before.next_node = Node.new(value, after)
+  end
+
+  def remove_at(index)
+    at(index - 1).next_node = at(index + 1)
   end
 end
 
